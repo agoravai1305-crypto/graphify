@@ -161,7 +161,7 @@ def drive_watch(root, monkeypatch, actions, *, observed_roots=None):
     monkeypatch.setattr(observers, "Observer", Observer)
     monkeypatch.setattr(polling, "PollingObserver", Observer)
     monkeypatch.setattr(watch_mod, "_rebuild_code", rebuild)
-    monkeypatch.setattr(watch_mod.time, "sleep", pump)
+    monkeypatch.setattr(watch_mod, "_watch_sleep", pump)
     watch_mod.watch(root, debounce=0)
 
 
