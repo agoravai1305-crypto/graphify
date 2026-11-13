@@ -25,6 +25,9 @@ from graphify.paths import (
 )
 
 logger = logging.getLogger(__name__)
+# Keep the watch loop's sleep hook local: monkeypatching time.sleep mutates the
+# process-wide time module and can disrupt rebuild workers and unrelated threads.
+_watch_sleep = time.sleep
 _PENDING_FILENAME = ".pending_changes"
 _PENDING_FULL_FILENAME = ".pending_full"
 _PENDING_INCREMENTAL_FILENAME = ".pending_incremental"
@@ -3817,7 +3820,7 @@ def watch(watch_path: Path, debounce: float = 3.0) -> None:
 
     try:
         while True:
-            time.sleep(0.5)
+            _watch_sleep(0.5)
             if pending and (time.monotonic() - last_trigger) >= debounce:
                 pending = False
                 batch = list(changed)
